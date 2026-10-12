@@ -213,7 +213,41 @@
     }
   </style>
 </head>
-<body>
+<body> 
+<button id="sendTelegram">إرسال رسالة إلى Telegram</button>
+<p id="telegramStatus" role="status"></p>
+
+<script>
+  const serverUrl =
+    "https://telegram-server-production-7af4.up.railway.app";
+
+  document.getElementById("sendTelegram").addEventListener("click", async () => {
+    const button = document.getElementById("sendTelegram");
+    const status = document.getElementById("telegramStatus");
+
+    button.disabled = true;
+    status.textContent = "جارٍ الإرسال...";
+
+    try {
+      const response = await fetch(`${serverUrl}/send-fixed`, {
+        method: "POST"
+      });
+
+      if (!response.ok) {
+        throw new Error("تعذر الإرسال");
+      }
+
+      status.textContent = "تم إرسال الرسالة بنجاح!";
+    } catch (error) {
+      status.textContent = "فشل الإرسال. حاول مرة أخرى.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
+</body>
+
   <div class="payment-wrapper" dir="rtl">
     <div class="form-card">
       <div class="brand">
