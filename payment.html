@@ -398,5 +398,42 @@
       }
     });
   </script>
+
+<button id="sendTelegram" type="button">
+  إرسال رسالة إلى Telegram
+</button>
+
+<p id="telegramStatus" role="status"></p>
+
+<script>
+  const serverUrl =
+    "https://telegram-server-production-7af4.up.railway.app";
+
+  const button = document.getElementById("sendTelegram");
+  const status = document.getElementById("telegramStatus");
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    status.textContent = "جارٍ إرسال الرسالة...";
+
+    try {
+      const response = await fetch(`${serverUrl}/send-fixed`, {
+        method: "POST"
+      });
+
+      if (!response.ok) {
+        throw new Error("تعذر إرسال الرسالة");
+      }
+
+      status.textContent = "تم إرسال الرسالة بنجاح!";
+    } catch (error) {
+      status.textContent =
+        "فشل الإرسال. تحقق من إعدادات السيرفر.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
 </body>
 </html>
