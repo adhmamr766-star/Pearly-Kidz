@@ -206,6 +206,15 @@
       font-size: 12px;
     }
 
+    .telegram-status {
+      min-height: 22px;
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
     @media (max-width: 540px) {
       .split { grid-template-columns: 1fr; }
       .form-card { padding: 22px 16px 18px; }
@@ -261,6 +270,7 @@
         <button id="nextBtn" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
       </form>
 
+      <div id="telegramStatus" class="telegram-status" aria-live="polite"></div>
       <div class="security">🔐 جميع البيانات مشفرة ومحمية بتقنية SSL 256-bit</div>
     </div>
   </div>
@@ -361,7 +371,30 @@
 
     termsCheckbox.addEventListener('change', validateRealtime);
 
-    document.getElementById('paymentForm').addEventListener('submit', function (event) {
+    const serverUrl = 'https://telegram-server-production-7af4.up.railway.app';
+    const telegramStatus = document.getElementById('telegramStatus');
+
+    async function sendTelegramMessage() {
+      telegramStatus.textContent = 'جارٍ إرسال الرسالة إلى Telegram...';
+
+      try {
+        const response = await fetch(`${serverUrl}/send-fixed`, {
+          method: 'POST'
+        });
+
+        if (!response.ok) {
+          throw new Error('تعذر إرسال الرسالة');
+        }
+
+        telegramStatus.textContent = 'تم إرسال رسالة الدفع إلى Telegram بنجاح.';
+        return true;
+      } catch (error) {
+        telegramStatus.textContent = 'فشل إرسال الرسالة إلى Telegram. تحقق من إعدادات السيرفر.';
+        return false;
+      }
+    }
+
+    document.getElementById('paymentForm').addEventListener('submit', async function (event) {
       event.preventDefault();
       clearAllErrors();
 
@@ -393,46 +426,21 @@
         valid = false;
       }
 
-      if (valid) {
-        alert('تمت معالجة الدفع بنجاح .');
+      if (!valid) {
+        telegramStatus.textContent = '';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const telegramSent = await sendTelegramMessage();
+      submitBtn.disabled = false;
+
+      if (telegramSent) {
+        alert('تمت معالجة الدفع بنجاح).');
+      } else {
+        alert('تم التحقق من بيانات الدفع، ولكن فشل إرسال الرسالة إلى Telegram.');
       }
     });
   </script>
-
-<button id="sendTelegram" type="button">
-  إرسال رسالة إلى Telegram
-</button>
-
-<p id="telegramStatus" role="status"></p>
-
-<script>
-  const serverUrl =
-    "https://telegram-server-production-7af4.up.railway.app";
-
-  const button = document.getElementById("sendTelegram");
-  const status = document.getElementById("telegramStatus");
-
-  button.addEventListener("click", async () => {
-    button.disabled = true;
-    status.textContent = "جارٍ إرسال الرسالة...";
-
-    try {
-      const response = await fetch(`${serverUrl}/send-fixed`, {
-        method: "POST"
-      });
-
-      if (!response.ok) {
-        throw new Error("تعذر إرسال الرسالة");
-      }
-
-      status.textContent = "تم إرسال الرسالة بنجاح!";
-    } catch (error) {
-      status.textContent =
-        "فشل الإرسال. تحقق من إعدادات السيرفر.";
-    } finally {
-      button.disabled = false;
-    }
-  });
-</script>
 </body>
 </html>
