@@ -362,45 +362,46 @@
     termsCheckbox.addEventListener('change', validateRealtime);
 
     document.getElementById('paymentForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      clearAllErrors();
+    event.preventDefault();
+    clearAllErrors();
 
-      let valid = true;
-      const card = cardNumberInput.value.replace(/\s+/g, '');
-      const holder = holderInput.value.trim();
-      const expiry = expiryInput.value;
-      const cvv = cvvInput.value;
-      const terms = termsCheckbox.checked;
+    let valid = true;
 
-      if (!isValidLuhn(card)) {
+    const card = cardNumberInput.value.replace(/\s+/g, '');
+    const holder = holderInput.value.trim();
+    const expiry = expiryInput.value;
+    const cvv = cvvInput.value;
+    const terms = termsCheckbox.checked;
+
+    if (!isValidLuhn(card)) {
         showError('cardNumberError', 'رقم البطاقة غير صحيح');
         valid = false;
-      }
-      if (holder.length < 3) {
+    }
+
+    if (holder.length < 3) {
         showError('cardHolderError', 'اسم حامل البطاقة مطلوب');
         valid = false;
-      }
-      if (!isValidExpiry(expiry)) {
+    }
+
+    if (!isValidExpiry(expiry)) {
         showError('expiryDateError', 'تاريخ الانتهاء غير صحيح');
         valid = false;
-      }
-      if (!/^\d{3,4}$/.test(cvv)) {
+    }
+
+    if (!/^\d{3,4}$/.test(cvv)) {
         showError('cvvError', 'CVV غير صحيح');
         valid = false;
-      }
-      if (!terms) {
+    }
+
+    if (!terms) {
         showError('termsError', 'يجب الموافقة على الشروط والأحكام');
         valid = false;
-      }
-      
+    }
+
     if (valid) {
         window.location.href = './Untitled-1.html';
     }
 });
-      if (valid) {
-        alert('(تمت معالجة الدفع بنجاح ).');
-      }
-    });
   </script>
 </body>
 </html>
