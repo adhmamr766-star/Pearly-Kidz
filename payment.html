@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بوابة الدفع</title>
+  <title>واجهة الدفع التجريبية</title>
   <style>
     :root {
       --bg: #f3f7ff;
@@ -218,7 +218,7 @@
     <div class="form-card">
       <div class="brand">
         <img src="https://alshafaqstore-uae.com/assets/images/visa.png" alt="Visa" />
-        <h2>بوابة الدفع الآمنة — Visa</h2>
+        <h2>واجهة الدفع التجريبية</h2>
       </div>
 
       <form id="paymentForm" novalidate>
@@ -241,13 +241,13 @@
         <div class="split">
           <div class="field">
             <label class="label" for="expiryDateInput">تاريخ الانتهاء</label>
-            <input id="expiryDateInput" class="form-input" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
+            <input id="expiryDateInput" class="form-input" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" autocomplete="cc-exp" />
             <div id="expiryDateError" class="error-msg"></div>
           </div>
 
           <div class="field">
             <label class="label" for="cvv">CVV</label>
-            <input id="cvv" class="form-input" type="tel" inputmode="numeric" maxlength="4" placeholder="•••" />
+            <input id="cvv" class="form-input" type="password" inputmode="numeric" maxlength="4" placeholder="•••" autocomplete="cc-csc" />
             <div id="cvvError" class="error-msg"></div>
           </div>
         </div>
@@ -261,7 +261,7 @@
         <button id="nextBtn" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
       </form>
 
-      <div class="security">🔐 جميع البيانات مشفرة ومحمية بتقنية SSL 256-bit</div>
+      <div class="security">ℹ️ هذه واجهة تجريبية فقط؛ لا يتم إرسال البيانات أو تنفيذ دفعة حقيقية.</div>
     </div>
   </div>
 
@@ -394,7 +394,7 @@
       }
 
       if (valid) {
-        alert('تمت معالجة الدفع بنجاح (عرض توضيحي فقط).');
+        alert('تم التحقق من الحقول بنجاح. هذه تجربة فقط ولم يتم تنفيذ أي دفعة أو إرسال أي بيانات.');
       }
     });
   </script>
