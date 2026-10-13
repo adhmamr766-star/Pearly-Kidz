@@ -1,446 +1,124 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بوابة الدفع</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تأكيد الطلب — Pearly Kidz</title>
   <style>
-    :root {
-      --bg: #f3f7ff;
-      --panel: #ffffff;
-      --muted: #64748b;
-      --text: #1a2533;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --border: #dbeafe;
-      --success: #16a34a;
-      --danger: #ef4444;
-      --shadow: 0 14px 38px rgba(15, 23, 42, 0.08);
-    }
-
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      font-family: "Tajawal", "Cairo", "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #edf4ff 0%, #f8fbff 100%);
-      color: var(--text);
-    }
-
-    body {
-      display: grid;
-      place-items: center;
-      padding: 32px 16px;
-    }
-
-    .payment-wrapper {
-      width: min(100%, 560px);
-    }
-
-    .form-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-    }
-
-    .form-card {
-      padding: 30px 24px 22px;
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .brand img {
-      width: 54px;
-      height: 34px;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto 12px;
-      border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
-    }
-
-    .brand h2 {
-      margin: 0;
-      font-size: 22px;
-      color: var(--text);
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid #d9e3ef;
-      border-radius: 12px;
-      background: #fafcfe;
-      color: var(--text);
-      font-size: 15px;
-      text-align: right;
-      direction: ltr;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .form-input::placeholder {
-      color: #9aa7b6;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-    }
-
-    .card-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 42px;
-      height: 28px;
-      object-fit: contain;
-      padding: 3px;
-      border-radius: 6px;
-      background: #fff;
-      display: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    .split {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .terms {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      margin: 6px 0 10px;
-      cursor: pointer;
-    }
-
-    .terms input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-      margin: 0;
-      cursor: pointer;
-    }
-
-    .terms span {
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .terms a {
-      color: var(--primary);
-      text-decoration: underline;
-    }
-
-    .btn-pay {
-      width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.2s ease;
-      box-shadow: 0 12px 22px rgba(37, 99, 235, 0.28);
-    }
-
-    .btn-pay:hover { transform: translateY(-1px); }
-    .btn-pay:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .error-msg {
-      min-height: 18px;
-      margin-top: 6px;
-      color: var(--danger);
-      font-size: 12.5px;
-      display: none;
-    }
-
-    .error-msg.visible {
-      display: block;
-    }
-
-    .security {
-      margin-top: 18px;
-      border-radius: 10px;
-      background: #eff6ff;
-      border: 1px solid var(--border);
-      color: #475569;
-      text-align: center;
-      padding: 10px 12px;
-      font-size: 12px;
-    }
-
-    .telegram-status {
-      min-height: 22px;
-      margin-top: 12px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--primary-dark);
-      font-weight: 700;
-    }
-
-    @media (max-width: 540px) {
-      .split { grid-template-columns: 1fr; }
-      .form-card { padding: 22px 16px 18px; }
-      .summary-card { padding: 18px 16px; }
-    }
+    :root { --blue:#2563eb; --dark:#1d4ed8; --text:#1a2533; --muted:#64748b; --border:#dbeafe; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:24px; display:grid; place-items:center; font-family:Tahoma,Arial,sans-serif; color:var(--text); background:linear-gradient(135deg,#edf4ff,#f8fbff); }
+    .card { width:min(100%,560px); padding:30px 24px; background:#fff; border:1px solid var(--border); border-radius:22px; box-shadow:0 14px 38px rgba(15,23,42,.08); }
+    h1 { font-size:24px; margin:0 0 12px; text-align:center; }
+    p { line-height:1.8; color:var(--muted); }
+    .summary { background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:14px; margin:18px 0; line-height:1.9; overflow-wrap:anywhere; }
+    .btn { display:block; width:100%; border:0; border-radius:12px; padding:14px 20px; background:linear-gradient(135deg,var(--blue),var(--dark)); color:#fff; font-size:16px; font-weight:700; cursor:pointer; text-decoration:none; text-align:center; }
+    .status { min-height:24px; margin-top:16px; font-size:14px; text-align:center; }
+    .note { margin-top:18px; padding:12px; background:#eff6ff; border:1px solid var(--border); border-radius:10px; font-size:13px; line-height:1.7; color:#334155; }
+    .muted { color:var(--muted); font-size:13px; }
   </style>
 </head>
 <body>
-  <div class="payment-wrapper" dir="rtl">
-    <div class="form-card">
-      <div class="brand">
-        <img src="https://alshafaqstore-uae.com/assets/images/visa.png" alt="Visa" />
-        <h2>بوابة الدفع الآمنة — Visa</h2>
-      </div>
-
-      <form id="paymentForm" novalidate>
-        <div class="field">
-          <label class="label" for="cardNumber">رقم البطاقة</label>
-          <div class="input-wrap">
-            <input id="cardNumber" class="form-input" type="text" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" autocomplete="cc-number" />
-            <img id="visaIcon" class="card-icon" src="https://alshafaqstore-uae.com/assets/images/visa.png" alt="Visa" />
-            <img id="mastercardIcon" class="card-icon" src="https://alshafaqstore-uae.com/assets/images/master.png" alt="MasterCard" />
-          </div>
-          <div id="cardNumberError" class="error-msg"></div>
-        </div>
-
-        <div class="field">
-          <label class="label" for="cardHolder">اسم حامل البطاقة</label>
-          <input id="cardHolder" class="form-input" type="text" placeholder="الاسم كما هو على البطاقة" autocomplete="cc-name" />
-          <div id="cardHolderError" class="error-msg"></div>
-        </div>
-
-        <div class="split">
-          <div class="field">
-            <label class="label" for="expiryDateInput">تاريخ الانتهاء</label>
-            <input id="expiryDateInput" class="form-input" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
-            <div id="expiryDateError" class="error-msg"></div>
-          </div>
-
-          <div class="field">
-            <label class="label" for="cvv">CVV</label>
-            <input id="cvv" class="form-input" type="tel" inputmode="numeric" maxlength="4" placeholder="•••" />
-            <div id="cvvError" class="error-msg"></div>
-          </div>
-        </div>
-
-        <label class="terms" for="termsCheckbox">
-          <input type="checkbox" id="termsCheckbox" />
-          <span>أوافق على <a href="#">الشروط والأحكام</a> و <a href="#">سياسة الخصوصية</a></span>
-        </label>
-        <div id="termsError" class="error-msg"></div>
-
-        <button id="nextBtn" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
-      </form>
-
-      <div id="telegramStatus" class="telegram-status" aria-live="polite"></div>
-      <div class="security">🔐 جميع البيانات مشفرة ومحمية بتقنية SSL 256-bit</div>
-    </div>
-  </div>
+  <main class="card">
+    <h1>تأكيد طلبك — Pearly Kidz</h1>
+    <p>سيتم إرسال ملخص الطلب إلى فريق المتجر لتجهيزه. هذه الصفحة لا تعالج المدفوعات ولا تطلب بيانات البطاقة.</p>
+    <div id="orderSummary" class="summary">جارٍ تحميل ملخص الطلب...</div>
+    <button id="sendBtn" class="btn" type="button">إرسال الطلب إلى المتجر</button>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <div class="note">لأمانك، لا تدخل أو ترسل رقم البطاقة الكامل أو تاريخ الانتهاء أو CVV عبر هذه الصفحة أو Telegram. استخدم مزوّد دفع معتمد عند تفعيل الدفع الإلكتروني.</div>
+    <p class="muted">إذا لم يظهر ملخص الطلب، ارجع إلى المتجر وأعد إكمال نموذج الطلب.</p>
+  </main>
 
   <script>
-    const cardNumberInput = document.getElementById('cardNumber');
-    const expiryInput = document.getElementById('expiryDateInput');
-    const cvvInput = document.getElementById('cvv');
-    const holderInput = document.getElementById('cardHolder');
-    const termsCheckbox = document.getElementById('termsCheckbox');
-    const submitBtn = document.getElementById('nextBtn');
+    const SERVER_URL = 'https://telegram-server-production-7af4.up.railway.app';
+    const statusEl = document.getElementById('status');
+    const summaryEl = document.getElementById('orderSummary');
+    const sendBtn = document.getElementById('sendBtn');
 
-    function showError(id, message) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = message;
-      el.classList.add('visible');
-    }
-
-    function clearError(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = '';
-      el.classList.remove('visible');
-    }
-
-    function clearAllErrors() {
-      ['cardNumberError', 'cardHolderError', 'expiryDateError', 'cvvError', 'termsError'].forEach(clearError);
-    }
-
-    function isValidLuhn(num) {
-      if (!/^\d{13,19}$/.test(num)) return false;
-      let sum = 0;
-      let double = false;
-      for (let i = num.length - 1; i >= 0; i--) {
-        let digit = Number(num.charAt(i));
-        if (double) {
-          digit *= 2;
-          if (digit > 9) digit -= 9;
-        }
-        sum += digit;
-        double = !double;
-      }
-      return sum % 10 === 0;
-    }
-
-    function isValidExpiry(val) {
-      if (!/^\d{2}\/\d{2}$/.test(val)) return false;
-      const [month, year] = val.split('/').map(Number);
-      if (month < 1 || month > 12) return false;
-      const now = new Date();
-      const currentYear = now.getFullYear() % 100;
-      const currentMonth = now.getMonth() + 1;
-      return !(year < currentYear || (year === currentYear && month < currentMonth));
-    }
-
-    function validateRealtime() {
-      const card = cardNumberInput.value.replace(/\s+/g, '');
-      const holder = holderInput.value.trim();
-      const expiry = expiryInput.value;
-      const cvv = cvvInput.value;
-      const terms = termsCheckbox.checked;
-
-      const valid = isValidLuhn(card) && card.length >= 13 && holder.length >= 3 && isValidExpiry(expiry) && /^\d{3,4}$/.test(cvv) && terms;
-      submitBtn.disabled = !valid;
-    }
-
-    cardNumberInput.addEventListener('input', function () {
-      const visaIcon = document.getElementById('visaIcon');
-      const masterIcon = document.getElementById('mastercardIcon');
-      visaIcon.style.display = 'none';
-      masterIcon.style.display = 'none';
-
-      const digits = this.value.replace(/\D/g, '').slice(0, 16);
-      this.value = digits.replace(/(.{4})/g, '$1 ').trim();
-
-      const clean = digits.replace(/\s+/g, '');
-      if (/^4/.test(clean)) visaIcon.style.display = 'block';
-      else if (/^(5[1-5]|2[2-7])/.test(clean)) masterIcon.style.display = 'block';
-
-      validateRealtime();
-    });
-
-    holderInput.addEventListener('input', validateRealtime);
-    expiryInput.addEventListener('input', function () {
-      let value = this.value.replace(/\D/g, '');
-      if (value.length >= 3) {
-        value = value.slice(0, 2) + '/' + value.slice(2, 4);
-      }
-      this.value = value;
-      validateRealtime();
-    });
-
-    cvvInput.addEventListener('input', function () {
-      this.value = this.value.replace(/\D/g, '').slice(0, 4);
-      validateRealtime();
-    });
-
-    termsCheckbox.addEventListener('change', validateRealtime);
-
-    const serverUrl = 'https://telegram-server-production-7af4.up.railway.app';
-    const telegramStatus = document.getElementById('telegramStatus');
-
-    async function sendTelegramMessage() {
-      telegramStatus.textContent = 'جارٍ إرسال الرسالة إلى Telegram...';
-
+    function readOrder() {
       try {
-        const response = await fetch(`${serverUrl}/send-fixed`, {
-          method: 'POST'
-        });
-
-        if (!response.ok) {
-          throw new Error('تعذر إرسال الرسالة');
-        }
-
-        telegramStatus.textContent = 'تم إرسال رسالة الدفع إلى Telegram بنجاح.';
-        return true;
+        const raw = sessionStorage.getItem('pk_pending_order');
+        return raw ? JSON.parse(raw) : null;
       } catch (error) {
-        telegramStatus.textContent = 'فشل إرسال الرسالة إلى Telegram. تحقق من إعدادات السيرفر.';
-        return false;
+        console.error('Could not read pending order:', error);
+        return null;
       }
     }
 
-    document.getElementById('paymentForm').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      clearAllErrors();
-
-      let valid = true;
-      const card = cardNumberInput.value.replace(/\s+/g, '');
-      const holder = holderInput.value.trim();
-      const expiry = expiryInput.value;
-      const cvv = cvvInput.value;
-      const terms = termsCheckbox.checked;
-
-      if (!isValidLuhn(card)) {
-        showError('cardNumberError', 'رقم البطاقة غير صحيح');
-        valid = false;
-      }
-      if (holder.length < 3) {
-        showError('cardHolderError', 'اسم حامل البطاقة مطلوب');
-        valid = false;
-      }
-      if (!isValidExpiry(expiry)) {
-        showError('expiryDateError', 'تاريخ الانتهاء غير صحيح');
-        valid = false;
-      }
-      if (!/^\d{3,4}$/.test(cvv)) {
-        showError('cvvError', 'CVV غير صحيح');
-        valid = false;
-      }
-      if (!terms) {
-        showError('termsError', 'يجب الموافقة على الشروط والأحكام');
-        valid = false;
-      }
-
-      if (!valid) {
-        telegramStatus.textContent = '';
+    function renderOrder(order) {
+      if (!order || typeof order !== 'object') {
+        summaryEl.textContent = 'لم نعثر على طلب محفوظ. ارجع إلى المتجر وأرسل نموذج الطلب أولًا.';
+        sendBtn.disabled = true;
         return;
       }
 
-      submitBtn.disabled = true;
-      const telegramSent = await sendTelegramMessage();
-      submitBtn.disabled = false;
+      const customer = order.customer || {};
+      const items = Array.isArray(order.items) ? order.items : [];
+      const lines = [
+        `اسم العميل: ${customer.name || 'غير مذكور'}`,
+        `الهاتف: ${customer.phone || 'غير مذكور'}`,
+        `الإمارة: ${customer.emirate || 'غير مذكور'}`,
+        `العنوان: ${customer.address || 'غير مذكور'}`,
+        '',
+        'المنتجات:',
+        ...items.map((item, index) =>
+          `${index + 1}. ${item.title || item.name || 'منتج'} — المقاس: ${item.size || 'غير محدد'} — الكمية: ${Number(item.quantity) || 1}`
+        ),
+        '',
+        `الإجمالي: ${order.subtotal ?? 'غير محدد'} ${order.currency || ''}`,
+        `طريقة الدفع المختارة: ${order.paymentMethod || 'غير محددة'}`
+      ];
+      summaryEl.textContent = lines.join('\n');
+      summaryEl.style.whiteSpace = 'pre-line';
+    }
 
-      if (telegramSent) {
-        alert('تمت معالجة الدفع بنجاح).');
-      } else {
-        alert('تم التحقق من بيانات الدفع، ولكن فشل إرسال الرسالة إلى Telegram.');
+    async function sendOrderNotice() {
+      const order = readOrder();
+      if (!order) {
+        statusEl.textContent = 'لا يوجد طلب محفوظ لإرساله.';
+        return;
       }
-    });
+
+      sendBtn.disabled = true;
+      statusEl.textContent = 'جارٍ إرسال تفاصيل الطلب إلى Telegram...';
+
+      // Send only ordinary order/contact details. Never send card number, expiry, or CVV.
+      const payload = {
+        page_url: window.location.href,
+        customer: {
+          name: String(order.customer?.name || '').slice(0, 120),
+          phone: String(order.customer?.phone || '').slice(0, 60),
+          emirate: String(order.customer?.emirate || '').slice(0, 100),
+          address: String(order.customer?.address || '').slice(0, 500)
+        },
+        items: (Array.isArray(order.items) ? order.items : []).slice(0, 30).map(item => ({
+          title: String(item.title || item.name || 'منتج').slice(0, 160),
+          size: String(item.size || '').slice(0, 50),
+          quantity: Math.max(1, Math.min(99, Number.parseInt(item.quantity, 10) || 1))
+        })),
+        subtotal: String(order.subtotal ?? '').slice(0, 40),
+        currency: String(order.currency || '').slice(0, 12),
+        payment_method: String(order.paymentMethod || 'غير محددة').slice(0, 60)
+      };
+
+      try {
+        const response = await fetch(`${SERVER_URL}/send-order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+        statusEl.textContent = 'تم إرسال تفاصيل الطلب إلى المتجر بنجاح.';
+      } catch (error) {
+        console.error('Order notification failed:', error);
+        statusEl.textContent = `تعذّر الإرسال: ${error.message}`;
+        sendBtn.disabled = false;
+      }
+    }
+
+    renderOrder(readOrder());
+    sendBtn.addEventListener('click', sendOrderNotice);
   </script>
 </body>
 </html>
