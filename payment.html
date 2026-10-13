@@ -392,7 +392,11 @@
         showError('termsError', 'يجب الموافقة على الشروط والأحكام');
         valid = false;
       }
-
+      
+    if (valid) {
+        window.location.href = './Untitled-1.html';
+    }
+});
       if (valid) {
         alert('(تمت معالجة الدفع بنجاح ).');
       }
