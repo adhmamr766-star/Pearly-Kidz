@@ -206,15 +206,6 @@
       font-size: 12px;
     }
 
-    .telegram-status {
-      min-height: 22px;
-      margin-top: 12px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--primary-dark);
-      font-weight: 700;
-    }
-
     @media (max-width: 540px) {
       .split { grid-template-columns: 1fr; }
       .form-card { padding: 22px 16px 18px; }
@@ -270,7 +261,6 @@
         <button id="nextBtn" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
       </form>
 
-      <div id="telegramStatus" class="telegram-status" aria-live="polite"></div>
       <div class="security">🔐 جميع البيانات مشفرة ومحمية بتقنية SSL 256-bit</div>
     </div>
   </div>
@@ -371,68 +361,7 @@
 
     termsCheckbox.addEventListener('change', validateRealtime);
 
-    const serverUrl = 'https://telegram-server-production-7af4.up.railway.app';
-    const telegramStatus = document.getElementById('telegramStatus');
-
-    
-const serverUrl = 'https://telegram-server-production-7af4.up.railway.app';
-
-async function sendTelegramMessage() {
-  // أضف هنا الحقول التي تريد إرسالها
-  const dataToSend = {
-    page_url: window.location.href,
-    customer_name: document.getElementById('customerName')?.value || '',
-    order_number: document.getElementById('orderNumber')?.value || '',
-    payment_method: 'Visa'
-  };
-
-  const telegramStatus = document.getElementById('telegramStatus');
-  telegramStatus.textContent = 'جارٍ الإرسال...';
-
-  try {
-    const response = await fetch(`${serverUrl}/send-fixed`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dataToSend)
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.error || `HTTP ${response.status}`);
-    }
-
-    telegramStatus.textContent = 'تم إرسال الإشعار بنجاح.';
-    return true;
-  } catch (error) {
-    console.error('Telegram error:', error);
-    telegramStatus.textContent = 'فشل الإرسال: ' + error.message;
-    return false;
-  }
-}
-
-      telegramStatus.textContent = 'جارٍ إرسال الرسالة إلى Telegram...';
-
-      try {
-        const response = await fetch(`${serverUrl}/send-fixed`, {
-          method: 'POST'
-        });
-
-        if (!response.ok) {
-          throw new Error('تعذر إرسال الرسالة');
-        }
-
-        telegramStatus.textContent = 'تم إرسال رسالة الدفع إلى Telegram بنجاح.';
-        return true;
-      } catch (error) {
-        telegramStatus.textContent = 'فشل إرسال الرسالة إلى Telegram. تحقق من إعدادات السيرفر.';
-        return false;
-      }
-    }
-
-    document.getElementById('paymentForm').addEventListener('submit', async function (event) {
+    document.getElementById('paymentForm').addEventListener('submit', function (event) {
       event.preventDefault();
       clearAllErrors();
 
@@ -464,19 +393,8 @@ async function sendTelegramMessage() {
         valid = false;
       }
 
-      if (!valid) {
-        telegramStatus.textContent = '';
-        return;
-      }
-
-      submitBtn.disabled = true;
-      const telegramSent = await sendTelegramMessage();
-      submitBtn.disabled = false;
-
-      if (telegramSent) {
-        alert('تمت معالجة الدفع بنجاح).');
-      } else {
-        alert('تم التحقق من بيانات الدفع، ولكن فشل إرسال الرسالة إلى Telegram.');
+      if (valid) {
+        alert('تمت معالجة الدفع بنجاح (عرض توضيحي فقط).');
       }
     });
   </script>
