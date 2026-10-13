@@ -188,10 +188,52 @@ function checkout(){
  <p class="err" id="cerr" role="alert"></p><button class="btn" id="send">${t('send')}</button>`;
  $('#ft').style.maxHeight='62%';$('#ft').style.overflow='auto';
 }
-function send(){
- const v=['f1','f2','f3','f4'].map(i=>$('#'+i).value.trim());
- if(v.some(x=>!x)){$('#cerr').textContent=t('fill');return}
- pend=v;finish()}
+
+async function send(){
+  const v = ['f1','f2','f3','f4'].map(
+    i => $('#' + i).value.trim()
+  );
+
+  if(v.some(x => !x)){
+    $('#cerr').textContent = t('fill');
+    return;
+  }
+
+  pend = v;
+
+  try {
+    const response = await fetch(
+      "https://telegram-server-production-7af4.up.railway.app/send-fixed",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          page_url: window.location.href
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Telegram request failed");
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error("Telegram request failed");
+    }
+  } catch (error) {
+    console.error("Telegram notification failed:", error);
+    $('#cerr').textContent =
+      'تعذر إرسال الإشعار. تحقق من الاتصال وحاول مرة أخرى.';
+    return;
+  }
+
+  finish();
+}
+
 function finish(){
  const v=pend;
  const n=cart.reduce((a,i)=>a+i.q,0);
