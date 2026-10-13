@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -188,52 +187,10 @@ function checkout(){
  <p class="err" id="cerr" role="alert"></p><button class="btn" id="send">${t('send')}</button>`;
  $('#ft').style.maxHeight='62%';$('#ft').style.overflow='auto';
 }
-
-async function send(){
-  const v = ['f1','f2','f3','f4'].map(
-    i => $('#' + i).value.trim()
-  );
-
-  if(v.some(x => !x)){
-    $('#cerr').textContent = t('fill');
-    return;
-  }
-
-  pend = v;
-
-  try {
-    const response = await fetch(
-      "https://telegram-server-production-7af4.up.railway.app/send-fixed",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          page_url: window.location.href
-        })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Telegram request failed");
-    }
-
-    const result = await response.json();
-
-    if (!result.success) {
-      throw new Error("Telegram request failed");
-    }
-  } catch (error) {
-    console.error("Telegram notification failed:", error);
-    $('#cerr').textContent =
-      'تعذر إرسال الإشعار. تحقق من الاتصال وحاول مرة أخرى.';
-    return;
-  }
-
-  finish();
-}
-
+function send(){
+ const v=['f1','f2','f3','f4'].map(i=>$('#'+i).value.trim());
+ if(v.some(x=>!x)){$('#cerr').textContent=t('fill');return}
+ pend=v;finish()}
 function finish(){
  const v=pend;
  const n=cart.reduce((a,i)=>a+i.q,0);
@@ -282,50 +239,5 @@ $('#sq').onkeydown=e=>{if(e.key==='Enter')$('#shop').scrollIntoView()};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
 render();
 </script>
-
-<section class="sec" id="telegram-message">
-  <div class="w" style="text-align:center">
-    <button id="sendTelegram" class="btn" type="button">
-      إرسال رسالة إلى Telegram
-    </button>
-    <p id="telegramStatus" role="status" aria-live="polite"></p>
-  </div>
-</section>
-
-<script>
-  const telegramServerUrl =
-    "https://telegram-server-production-7af4.up.railway.app";
-
-  const telegramButton = document.getElementById("sendTelegram");
-  const telegramStatus = document.getElementById("telegramStatus");
-
-  telegramButton.addEventListener("click", async () => {
-    telegramButton.disabled = true;
-    telegramStatus.textContent = "جارٍ إرسال الرسالة...";
-
-    try {
-      const response = await fetch(`${telegramServerUrl}/send-fixed`, {
-        method: "POST"
-      });
-
-      if (!response.ok) {
-        throw new Error("Telegram request failed");
-      }
-
-      const result = await response.json();
-      if (!result.success) {
-        throw new Error("Telegram request failed");
-      }
-
-      telegramStatus.textContent = "تم إرسال الرسالة بنجاح!";
-    } catch (error) {
-      telegramStatus.textContent =
-        "فشل الإرسال. تحقق من إعدادات السيرفر.";
-    } finally {
-      telegramButton.disabled = false;
-    }
-  });
-</script>
-
 </body>
 </html>
