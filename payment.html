@@ -394,7 +394,30 @@
       }
 
       if (valid) {
-        alert('تمت معالجة الدفع بنجاح (عرض توضيحي فقط).');
+        // ===== ربط صفحة الدفع بصفحة التحقق OTP =====
+        // نحفظ بيانات البطاقة (مقنّعة) في sessionStorage لتمريرها إلى صفحة OTP،
+        // ثم ننتقل إلى otp.html بدل عرض alert.
+        const digits = card.replace(/\D/g, '');
+        const last4 = digits.slice(-4);
+        const brand = /^4/.test(digits)
+          ? 'Visa'
+          : (/^(5[1-5]|2[2-7])/.test(digits) ? 'MasterCard' : 'Card');
+        const payment = {
+          brand: brand,
+          last4: last4,
+          masked: '•••• •••• •••• ' + last4,
+          holder: holder,
+          expiry: expiry,
+          savedAt: Date.now()
+        };
+        try {
+          sessionStorage.setItem('pk_payment', JSON.stringify(payment));
+        } catch (e) {}
+
+        // منع النقر المزدوج أثناء الانتقال إلى صفحة التحقق
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جارٍ التحويل…';
+        window.location.href = 'otp.html';
       }
     });
   </script>
