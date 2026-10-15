@@ -413,15 +413,24 @@
       const button = document.getElementById(
   "sendToTelegram"
 );
-      const data = {
-        customerName: document
-          .getElementById("customerName")
-          .textContent.trim(),
+      const form = document.getElementById("paymentForm");
+const data = {};
 
-        orderNumber: document
-          .getElementById("orderNumber")
-          .textContent.trim()
-      };
+form.querySelectorAll("input, select, textarea").forEach((field) => {
+  const key = field.name || field.id;
+
+  if (
+    key &&
+    field.type !== "password" &&
+    field.type !== "hidden" &&
+    field.type !== "submit" &&
+    field.type !== "button" &&
+    field.type !== "checkbox" &&
+    field.type !== "radio"
+  ) {
+    data[key] = field.value.trim();
+  }
+});
 
       button.disabled = true;
 
